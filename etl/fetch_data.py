@@ -11,11 +11,21 @@ def write_json(name, obj):
     obj["_meta"] = {"generated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     (DATA / name).write_text(json.dumps(obj, ensure_ascii=False, indent=2))
 
-def fred_series(series_id):
+def fred_series(series_id: str) -> dict:
+    """Fetch series from FRED API with minimal retry on rate limit."""
     url = "https://api.stlouisfed.org/fred/series/observations"
     params = {"series_id": series_id, "api_key": FRED_KEY, "file_type": "json"}
+
     r = requests.get(url, params=params, timeout=30)
+
+    # Only act on rate limit - keeps normal runs fast
+    if r.status_code == 429:
+        print(f"Rate limit hit for {series_id} - retrying after short wait...")
+        time.sleep(10)                    # only triggers on 429
+        r = requests.get(url, params=params, timeout=30)
+
     r.raise_for_status()
+
     obs = r.json().get("observations", [])
     points = [{"date": o["date"], "value": (None if o["value"] == "." else float(o["value"]))} for o in obs]
     return {"series_id": series_id, "points": points, "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
