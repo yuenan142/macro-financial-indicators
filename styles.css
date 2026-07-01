@@ -87,3 +87,36 @@ a{color:var(--accent); text-decoration: underline dotted;}
         /* Minimal padding for phones; prevents left black bar dominance */
     }
 }
+
+/* ── Arthur Hayes RRP Signal Card ─────────────────────────────── */
+.signal-card {
+    border-left: 3px solid var(--accent);
+}
+.signal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.signal-badge {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    white-space: nowrap;
+}
+.signal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+}
+#rrp-signal-text {
+    font-size: 1.05rem;
+}
+#rrp-signal-detail {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}

@@ -24,6 +24,12 @@ const SOURCES = {
   // dex30d:     { label: 'Source: DefiLlama (DEX Volume)', url: 'https://defillama.com/dexs' },
   // funding:    { label: 'Source: CoinGlass (Funding)', url: 'https://coinglass.com' },
   // oi:         { label: 'Source: CoinGlass (Open Interest)', url: 'https://coinglass.com' },
+
+  // NEW indicators
+  fednetliq: { label: 'Source: FRED — WALCL, RRPONTSYD, WTREGEN', url: 'https://fred.stlouisfed.org/series/WALCL' },
+  globalcb:  { label: 'Source: FRED — WALCL, ECBASSETSW, JPNASSETS', url: 'https://fred.stlouisfed.org/series/WALCL' },
+  stablecoin:{ label: 'Source: CoinGecko API', url: 'https://www.coingecko.com/' },
+  rrp:       { label: 'Source: FRED — RRPONTSYD (Arthur Hayes Framework)', url: 'https://fred.stlouisfed.org/series/RRPONTSYD' },
 };
 
 // Helper to set source + last-updated from a JSON payload
@@ -195,4 +201,151 @@ function formatDateToMMYY(isoDateStr) {
   } catch (e) {
     console.error('Failed to load Fed Funds:', e);
   }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  NEW: Fed Net Liquidity  (net_liq)
+// ═══════════════════════════════════════════════════════════════════
+(async () => {
+  try {
+    const r = await fetch('data/fed_net_liq.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`fed_net_liq.json ${r.status}`);
+    const data = await r.json();
+    setMeta('fednetliq', data);
+    const labels = data.points.map(p => formatDateToMMYY(p.date));
+    const vals   = data.points.map(p => p.value);
+    new Chart(document.getElementById('fednetliq'), {
+      type: 'line',
+      data: { labels, datasets: [ lineDS('Fed Net Liquidity (Millions USD)', vals, '#60a5fa') ] },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: { callbacks: { label: ctx => `$${(ctx.raw/1e6).toFixed(2)}T` } }
+        }
+      }
+    });
+  } catch (e) { console.error('Failed to load Fed Net Liquidity:', e); }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  NEW: Global Central Bank Balance Sheet  (global_cb)
+// ═══════════════════════════════════════════════════════════════════
+(async () => {
+  try {
+    const r = await fetch('data/global_cb.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`global_cb.json ${r.status}`);
+    const data = await r.json();
+    setMeta('globalcb', data);
+    const labels = data.points.map(p => formatDateToMMYY(p.date));
+    const vals   = data.points.map(p => p.value);
+    new Chart(document.getElementById('globalcb'), {
+      type: 'line',
+      data: { labels, datasets: [ lineDS('Global CB Balance (Millions USD)', vals, '#a78bfa') ] },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: { callbacks: { label: ctx => `$${(ctx.raw/1e6).toFixed(2)}T` } }
+        }
+      }
+    });
+  } catch (e) { console.error('Failed to load Global CB:', e); }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  NEW: Stablecoin Market Cap  (stablecoin_mcap)
+// ═══════════════════════════════════════════════════════════════════
+(async () => {
+  try {
+    const r = await fetch('data/stablecoin_mcap.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`stablecoin_mcap.json ${r.status}`);
+    const data = await r.json();
+    setMeta('stablecoin', data);
+    if (data.points && data.points.length > 0) {
+      const p = data.points[data.points.length - 1];
+      const labels = [formatDateToMMYY(p.date)];
+      const vals   = [p.value];
+      new Chart(document.getElementById('stablecoin'), {
+        type: 'bar',
+        data: { labels, datasets: [{
+          label: `稳定币市值 (USD)`,
+          data: vals,
+          backgroundColor: '#22d3ee',
+          borderColor: '#22d3ee',
+          borderWidth: 1,
+          borderRadius: 4,
+        }]},
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: { callbacks: { label: ctx => `$${(ctx.raw/1e9).toFixed(2)}B` } }
+          }
+        }
+      });
+    } else {
+      document.getElementById('stablecoin').parentElement.querySelector('.desc').innerHTML
+        += '<br><span style="color:#f87171;">⚠ 数据获取失败（CoinGecko API 可能限流）</span>';
+    }
+  } catch (e) { console.error('Failed to load Stablecoin MCap:', e); }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  NEW: Arthur Hayes RRP Pipeline Signal Card
+// ═══════════════════════════════════════════════════════════════════
+(async () => {
+  try {
+    const r = await fetch('data/rrp_signal.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`rrp_signal.json ${r.status}`);
+    const data = await r.json();
+    setMeta('rrp', data);
+
+    // Update signal card text
+    const phaseEl   = document.getElementById('rrp-phase');
+    const signalEl  = document.getElementById('rrp-signal-text');
+    const detailEl  = document.getElementById('rrp-signal-detail');
+
+    if (phaseEl) {
+      phaseEl.textContent = data.phase || 'Unknown';
+      phaseEl.style.color = data.phase_color || '#e6e6e6';
+    }
+    if (signalEl)  signalEl.textContent  = data.signal  || '';
+    if (detailEl)  detailEl.textContent  = data.detail  || '';
+
+    // Render RRP chart (last ~90 trading days)
+    if (data.points && data.points.length > 0) {
+      const labels = data.points.map(p => formatDateToMMYY(p.date));
+      const vals   = data.points.map(p => p.value);
+      new Chart(document.getElementById('rrpchart'), {
+        type: 'line',
+        data: { labels, datasets: [ lineDS('RRP (Billions USD)', vals, '#f7931a') ] },
+        options: {
+          responsive: true,
+          plugins: {
+            annotation: data.peak_date ? {
+              annotations: {
+                peakLine: {
+                  type: 'line',
+                  yMin: data.peak_rrp_b,
+                  yMax: data.peak_rrp_b,
+                  borderColor: '#f87171',
+                  borderWidth: 1,
+                  borderDash: [5, 5],
+                  label: {
+                    display: true,
+                    content: `Peak: $${data.peak_rrp_b.toLocaleString()}B (${data.peak_date})`,
+                    position: 'start',
+                  }
+                }
+              }
+            } : {}
+          }
+        }
+      });
+    }
+
+    // Color the signal card border-left based on phase
+    const card = document.getElementById('rrp-signal-card');
+    if (card && data.phase_color) {
+      card.style.borderLeftColor = data.phase_color;
+    }
+  } catch (e) { console.error('Failed to load RRP Signal:', e); }
 })();

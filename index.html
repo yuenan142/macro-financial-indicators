@@ -116,6 +116,74 @@
       </div>
     </div>
 
+    <!-- ═══ NEW: Fed Net Liquidity ──────────────────────────────── -->
+    <div class="chart">
+      <canvas id="fednetliq"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>Fed 净流动性 / Fed Net Liquidity</strong> = WALCL − RRP − TGA（百万美元）
+          <br>净流动性上升 = 量化宽松/扩表 → 利好风险资产（含BTC）；净流动性下降 = 缩表/流动性收紧 → 利空。
+          <br><em>Fed Net Liquidity = Total Assets − Reverse Repo − Treasury General Account</em>
+        </div>
+        <div class="meta">
+          <div id="src-fednetliq"></div>
+          <div id="upd-fednetliq"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NEW: Global Central Bank Balance Sheet ───────────────── -->
+    <div class="chart">
+      <canvas id="globalcb"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>全球央行资产负债表 / Global CB Balance Sheet</strong> = 美联储 + 欧央行 + 日本央行（百万美元）
+          <br>全球央行同步扩表 = 充足的全球流动性（利好BTC）；同步缩表 = 流动性危机风险。
+          <br><em>Fed (WALCL) + ECB (ECBASSETSW × EUR/USD) + BOJ (JPNASSETS × 100M JPY → USD)</em>
+        </div>
+        <div class="meta">
+          <div id="src-globalcb"></div>
+          <div id="upd-globalcb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NEW: Stablecoin Market Cap ──────────────────────────── -->
+    <div class="chart">
+      <canvas id="stablecoin"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>稳定币总市值 / Stablecoin Market Cap</strong> (USD, CoinGecko)
+          <br>稳定币市值上升 = 链上新资金入场，是加密货币市场的"干火药"（dry powder）；下降 = 资金外流/去风险。
+          <br><em>Top stablecoins aggregated via CoinGecko API</em>
+        </div>
+        <div class="meta">
+          <div id="src-stablecoin"></div>
+          <div id="upd-stablecoin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NEW: Arthur Hayes RRP Pipeline Signal Card ──────────── -->
+    <div class="chart signal-card" id="rrp-signal-card">
+      <div class="signal-header">
+        <span class="signal-badge" id="rrp-phase">🔄 Loading...</span>
+        <span class="signal-title">Arthur Hayes RRP 流动性管道信号</span>
+      </div>
+      <canvas id="rrpchart" style="aspect-ratio:16/7;"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong id="rrp-signal-text">加载中...</strong>
+          <br><span id="rrp-signal-detail"></span>
+          <br><small>基于 Arthur Hayes 流动性框架：RRP（隔夜逆回购）消耗速度决定市场流动性阶段。</small>
+        </div>
+        <div class="meta">
+          <div id="src-rrp"></div>
+          <div id="upd-rrp"></div>
+        </div>
+      </div>
+    </div>
+
 
   </section>
 
