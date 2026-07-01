@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>交易系统面板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;display:flex;min-height:100vh}
+.sidebar{width:200px;background:#0c1222;border-right:1px solid #1e293b;padding:20px 0;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar .logo{font-size:1em;font-weight:700;padding:0 20px 20px;border-bottom:1px solid #1e293b;margin-bottom:12px;color:#60a5fa;cursor:pointer}
+.nav-item{display:flex;align-items:center;gap:10px;padding:13px 20px;cursor:pointer;color:#94a3b8;font-size:0.88em;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{background:#1e293b;color:#e2e8f0}
+.nav-item.active{background:#1e293b;color:#f8fafc;border-left-color:#60a5fa}
+.nav-item .icon{font-size:1.1em;width:22px;text-align:center}
+.main{flex:1;overflow-y:auto;max-height:100vh}
+.page{display:none;padding:24px 28px}
+.page.active{display:block}
+.page h1{font-size:1.3em;margin-bottom:4px}
+.page .sub{color:#64748b;font-size:0.8em;margin-bottom:18px}
+/* 宏观指标卡片 */
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:1100px){.macro-grid{grid-template-columns:1fr}}
+.mcard{background:#1e293b;border-radius:10px;padding:14px 16px;border:1px solid #334155;display:flex;gap:14px;align-items:center}
+.mcard .val-block{min-width:90px;text-align:center}
+.mcard .val-block .val{font-size:1.4em;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mcard .val-block .label{font-size:0.7em;color:#64748b;margin-top:2px}
+.mcard .chart-wrap{flex:1;min-width:0}
+.mcard canvas{width:100%!important;height:70px!important}
+.mcard .desc{font-size:0.72em;color:#94a3b8;line-height:1.4;max-width:280px}
+.signal-card{border:2px solid #3b82f6!important}
+.signal-card .sig-badge{font-size:0.85em;font-weight:700;margin-bottom:4px}
+.signal-card .sig-text{font-size:0.78em;color:#94a3b8}
+.summary-card{text-align:center;padding:20px;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:10px;border:2px solid #eab308;margin-bottom:14px}
+.summary-card .big{font-size:2em;font-weight:900;color:#eab308;margin-bottom:4px}
+.summary-card .advice{font-size:0.9em;color:#94a3b8}
+/* BTC page */
+.btc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.btc-grid{grid-template-columns:repeat(2,1fr)}}
+.bcard-sm{background:#1e293b;border-radius:8px;padding:12px;border:1px solid #334155;text-align:center}
+.bcard-sm .label{font-size:0.7em;color:#64748b;margin-bottom:3px}
+.bcard-sm .val{font-size:1.3em;font-weight:700;font-family:'JetBrains Mono',monospace}
+.bcard{background:#1e293b;border-radius:10px;padding:14px;border:1px solid #334155;margin-bottom:14px}
+.bcard h2{font-size:0.92em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #0f172a}
+.bcard td{padding:4px 6px;border-bottom:1px solid #0f172a;font-size:0.78em}
+.tag{display:inline-block;padding:1px 8px;border-radius:8px;font-size:0.68em;font-weight:600}
+.tag.g{background:#065f46;color:#6ee7b7}.tag.y{background:#713f12;color:#fde68a}.tag.r{background:#7f1d1d;color:#fca5a5}
+.plh{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px;color:#475569;text-align:center}
+.plh p{font-size:0.82em}.plh .hint{font-size:0.7em;color:#334155}
+footer{text-align:center;color:#475569;font-size:0.7em;padding:20px;border-top:1px solid #1e293b;margin-top:20px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="logo" onclick="switchPage('macro')">◈ 交易面板</div>
+  <div class="nav-item active" onclick="switchPage('macro')"><span class="icon">📊</span> 宏观环境</div>
+  <div class="nav-item" onclick="switchPage('btc')"><span class="icon">₿</span> BTC 交易</div>
+  <div class="nav-item" onclick="switchPage('btcdom')"><span class="icon">🏛</span> BTCDOM</div>
+  <div class="nav-item" onclick="switchPage('about')"><span class="icon">ℹ️</span> 系统</div>
+</nav>
+
+<div class="main">
+
+<!-- ============ 宏观 ============ -->
+<div id="page-macro" class="page active">
+  <h1>📊 BTC 宏观状态面板</h1>
+  <p class="sub">数据每日自动更新 · FRED / CoinGecko / alternative.me · 刷新本页即可</p>
+
+  <!-- 快速概览 -->
+  <div class="btc-grid" style="margin-bottom:14px">
+    <div class="bcard-sm"><div class="label">M2 近一年趋势</div><div class="val" style="color:#60a5fa" id="qv-m2">—</div></div>
+    <div class="bcard-sm"><div class="label">净流动性</div><div class="val" style="color:#34d399" id="qv-liq">—</div></div>
+    <div class="bcard-sm"><div class="label">恐惧贪婪</div><div class="val" style="color:#f87171" id="qv-fng">—</div></div>
+    <div class="bcard-sm"><div class="label">Hayes 信号</div><div class="val" style="font-size:1em" id="qv-hayes">—</div></div>
+  </div>
+
+  <!-- 主要指标 -->
+  <div class="macro-grid" id="macro-cards"></div>
+
+  <!-- Hayes 信号卡 -->
+  <div id="hayes-card" class="mcard signal-card" style="margin-bottom:14px">
+    <div style="flex:1"><div class="sig-badge" id="hayes-phase">—</div><div class="sig-text" id="hayes-detail">—</div></div>
+  </div>
+
+  <footer>数据每日自动更新 · FRED / CoinGecko / alternative.me · GitHub Actions</footer>
+</div>
+
+<!-- ============ BTC 交易 ============ -->
+<div id="page-btc" class="page btc-page">
+  <h1>₿ BTC 交易系统</h1>
+  <p class="sub">四层过滤 · 指标池待定</p>
+  <div class="bcard"><h2>策略框架</h2>
+    <table>
+      <tr><td style="color:#60a5fa;width:110px">宏观</td><td>方向偏好，不决定做不做，决定站均线哪边</td></tr>
+      <tr><td style="color:#60a5fa">日线方向</td><td>价格 vs MA200 — 之上偏多，之下偏空</td></tr>
+      <tr><td style="color:#60a5fa">4H 进场信号</td><td>指标确认（待定：EMA/布林/TTI/VPCI/DMI）</td></tr>
+      <tr><td style="color:#60a5fa">1H 进场时机</td><td>FI2 衰竭 / EMA回调 / 结构破坏</td></tr>
+      <tr><td style="color:#60a5fa">出场</td><td>ATR止盈 + 分批离场 + 5K不盈即走</td></tr>
+    </table>
+  </div>
+  <div class="plh"><p>指标池待确认</p><p class="hint">EMA21/55 · 布林带 · TTI · VPCI · VWAP · FI2 · ADX · CMF</p></div>
+</div>
+
+<!-- ============ BTCDOM ============ -->
+<div id="page-btcdom" class="page btc-page">
+  <h1>🏛 BTCDOM 交易</h1>
+  <p class="sub">BTC 市值占比指数 · 币安永续合约</p>
+  <div class="bcard" style="margin-bottom:14px">
+    <table>
+      <tr><td style="color:#64748b;width:110px">构成</td><td>ETH ~60% · BNB ~10% · XRP ~8%</td></tr>
+      <tr><td style="color:#64748b">本质</td><td>加密市场"美元指数"</td></tr>
+      <tr><td style="color:#34d399">BTC ≥ MA120</td><td>→ 持有 BTC</td></tr>
+      <tr><td style="color:#fbbf24">BTC &lt; MA120</td><td>→ BTCDOM 避风港</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 系统 ============ -->
+<div id="page-about" class="page btc-page">
+  <h1>ℹ️ 系统信息</h1>
+  <div class="bcard"><h2>架构</h2><table>
+    <tr><td style="color:#60a5fa">L1</td><td>宏观方向偏好</td></tr><tr><td style="color:#60a5fa">L2</td><td>日线 MA200</td></tr><tr><td style="color:#60a5fa">L3</td><td>4H 指标确认</td></tr><tr><td style="color:#60a5fa">L4</td><td>1H 回调进场</td></tr>
+  </table></div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function switchPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');event.target.closest('.nav-item').classList.add('active')}
+Chart.defaults.color='#94a3b8';Chart.defaults.borderColor='#1e293b';Chart.defaults.font.family='system-ui';
+
+const INDICATORS = [
+  {id:'m2',file:'data/m2.json',name:'M2 货币供应量',unit:'10亿美元',color:'#60a5fa',desc:'M2↑ = 流动性宽松 → BTC偏多；领先约10-12个月'},
+  {id:'usd',file:'data/usd_index.json',name:'美元指数',unit:'指数',color:'#34d399',desc:'美元↑ = 全球流动性收紧 → BTC承压；美元↓ = BTC利好'},
+  {id:'yields',file:'data/yield_2y.json',name:'美债收益率 2Y/10Y',unit:'%',color:'#a78bfa',desc:'2Y紧跟Fed；10Y反映增长预期。倒挂=衰退预警'},
+  {id:'vix',file:'data/vix.json',name:'VIX 恐慌指数',unit:'指数',color:'#a78bfa',desc:'VIX飙升 = 恐慌/避险 → BTC往往跟随下跌'},
+  {id:'cpi',file:'data/cpi.json',name:'CPI 通胀率',unit:'%',color:'#f87171',desc:'CPI高企 = 加息压力 → 利空BTC；回落 = 利好'},
+  {id:'fednetliq',file:'data/fed_net_liq.json',name:'美联储净流动性',unit:'百万美元',color:'#60a5fa',desc:'=WALCL−RRP−TGA。净流动性↑ = 扩表利好'},
+  {id:'globalcb',file:'data/global_cb.json',name:'全球央行资产负债表',unit:'百万美元',color:'#a78bfa',desc:'Fed+ECB+BOJ。同步扩表 = 全球流动性充裕'},
+  {id:'stablecoin',file:'data/stablecoin_mcap.json',name:'稳定币总市值',unit:'USD',color:'#22d3ee',desc:'市值↑ = 链上新资金入场（干火药）；↓ = 资金外流'},
+  {id:'usdjpy',file:'data/usdjpy.json',name:'USD/JPY',unit:'日元/美元',color:'#f59e0b',desc:'JPY贬值 = 套利活跃→风险偏好；升值 = 避险'},
+  {id:'tips',file:'data/tips.json',name:'实际利率 10Y TIPS',unit:'%',color:'#34d399',desc:'实际利率↑ = BTC机会成本上升→利空'},
+  {id:'feargreed',file:'data/fear_greed.json',name:'恐惧贪婪指数',unit:'0-100',color:'#f87171',desc:'<25极度恐惧=买点；>75极度贪婪=见顶'},
+];
+
+const CARD_HTML = `<div class="mcard">
+  <div class="val-block"><div class="val" style="color:{{color}}">{{val}}</div><div class="label">{{name}}</div></div>
+  <div class="chart-wrap"><canvas id="ch-{{id}}"></canvas></div>
+  <div class="desc">{{desc}}</div>
+</div>`;
+
+function formatNum(v, unit) {
+  if (unit === '百万美元') return '$'+(v/1e6).toFixed(2)+'T';
+  if (unit === 'USD') return '$'+(v/1e9).toFixed(1)+'B';
+  if (v === null || v === undefined) return '—';
+  return typeof v === 'number' ? v.toFixed(2) : v;
+}
+
+function formatDate(d) {
+  const m=new Date(d);return (m.getMonth()+1).toString().padStart(2,'0')+'-'+String(m.getFullYear()).slice(-2);
+}
+
+async function loadAll() {
+  const container = document.getElementById('macro-cards');
+  let html = '';
+
+  for (const ind of INDICATORS) {
+    try {
+      const r = await fetch(ind.file, {cache:'no-cache'});
+      if (!r.ok) continue;
+      const data = await r.json();
+      const pts = data.points || [];
+      if (pts.length === 0) continue;
+
+      // Handle fear_greed special format (has 'label' field)
+      const lastVal = typeof pts[pts.length-1].value === 'number' ? pts[pts.length-1].value : pts[pts.length-1].value;
+      html += CARD_HTML
+        .replace(/{{id}}/g, ind.id)
+        .replace('{{name}}', ind.name)
+        .replace('{{val}}', formatNum(lastVal, ind.unit))
+        .replace('{{desc}}', ind.desc)
+        .replace('{{color}}', ind.color);
+    } catch(e) { console.error(ind.id, e); }
+  }
+
+  container.innerHTML = html;
+
+  // Render charts
+  for (const ind of INDICATORS) {
+    const canvas = document.getElementById('ch-'+ind.id);
+    if (!canvas) continue;
+    try {
+      const r = await fetch(ind.file, {cache:'no-cache'});
+      if (!r.ok) continue;
+      const data = await r.json();
+      const pts = data.points || [];
+      if (pts.length === 0) continue;
+
+      const labels = pts.filter((_,i) => i%Math.ceil(pts.length/50)===0 || i===pts.length-1).map(p => formatDate(p.date));
+      const step = Math.ceil(pts.length / labels.length);
+      const values = pts.map(p => typeof p.value==='number'?p.value:null).filter(v=>v!==null);
+
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            borderColor: ind.color,
+            borderWidth: 1.2,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { display: false }, y: { display: false } }
+        }
+      });
+    } catch(e) {}
+  }
+
+  // Hayes signal
+  try {
+    const rr = await fetch('data/rrp_signal.json', {cache:'no-cache'});
+    if (rr.ok) {
+      const d = await rr.json();
+      document.getElementById('hayes-phase').textContent = d.phase || '—';
+      document.getElementById('hayes-detail').textContent = d.signal ? d.signal+' — '+d.detail : '—';
+      document.getElementById('qv-hayes').textContent = d.phase ? d.phase.split(' ')[0] : '—';
+    }
+  } catch(e) {}
+
+  // Quick values
+  try {
+    const m2d = await (await fetch('data/m2.json', {cache:'no-cache'})).json();
+    const m2p = m2d.points || [];
+    if (m2p.length >= 12) {
+      const uniq = []; for (const p of m2p) if (!uniq.length || Math.abs(p.value-uniq[uniq.length-1])>1e-9) uniq.push(p);
+      if (uniq.length >= 2) {
+        const chg = ((uniq[uniq.length-1].value - uniq[uniq.length-2].value) / uniq[uniq.length-2].value * 100);
+        document.getElementById('qv-m2').textContent = chg > 0 ? '↑'+chg.toFixed(1)+'%' : '↓'+Math.abs(chg).toFixed(1)+'%';
+      }
+    }
+  } catch(e) {}
+  try {
+    const liq = await (await fetch('data/fed_net_liq.json', {cache:'no-cache'})).json();
+    const lp = liq.points || [];
+    document.getElementById('qv-liq').textContent = lp.length ? '$'+(lp[lp.length-1].value/1e6).toFixed(2)+'T' : '—';
+  } catch(e) {}
+  try {
+    const fg = await (await fetch('data/fear_greed.json', {cache:'no-cache'})).json();
+    const fp = fg.points || [];
+    document.getElementById('qv-fng').textContent = fp.length ? fp[fp.length-1].value + ' ' + (fp[fp.length-1].label||'') : '—';
+  } catch(e) {}
+}
+
+loadAll();
+</script>
+</body>
+</html>
