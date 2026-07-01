@@ -3,24 +3,25 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Macro Indicators</title>
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
+  <title>BTC 宏观面板 · Macro Dashboard</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/app.js" defer></script>
-
 </head>
 <body>
   <main>
-  <h1>Macroeconomic Indicators</h1>
+  <h1>📊 BTC 宏观指标面板</h1>
+  <p style="color:#94a3b8;font-size:0.9em;margin:-8px 0 20px">数据每日自动更新 · FRED / CoinGecko / alternative.me</p>
 
   <section class="grid">
+    <!-- M2 -->
     <div class="chart">
       <canvas id="m2"></canvas>
       <div class="caption">
           <div class="desc">
-            <strong>M2 money stock</strong> Broad USD liquidity (billions of USD, seasonally adjusted).
-            <br>Rising M2 = easier liquidity → tailwind for risk (often supportive for BTC); falling = headwind.
+            <strong>M2 货币供应量</strong> 广义美元流动性（十亿美元，季调）
+            <br>M2上升 = 流动性宽松 → 利好风险资产（BTC偏多）；M2下降 = 流动性收紧 → 利空。
+            <br><em>领先BTC约10-12个月，拐点处BTC往往跟随</em>
           </div>
         <div class="meta">
           <div id="src-m2"></div>
@@ -29,12 +30,13 @@
       </div>
     </div>
 
+    <!-- USD Index -->
     <div class="chart">
       <canvas id="usd"></canvas>
       <div class="caption">
           <div class="desc">
-            <strong>USD Broad Index</strong> Trade-weighted dollar strength (index value, 2020–2022 average = 100).
-            <br>Strong USD = risk-off pressure (often inverse to BTC); weak USD = risk-on tailwind.
+            <strong>美元指数（贸易加权）</strong> 美元相对全球主要货币的强弱
+            <br>美元走强 = 全球流动性收紧 → BTC承压；美元走弱 = 风险偏好上升 → BTC利好。
           </div>
           <div class="meta">
           <div id="src-usd"></div>
@@ -42,14 +44,14 @@
         </div>
       </div>
     </div>
-  
+
+    <!-- 美债收益率 -->
     <div class="chart">
       <canvas id="yields"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>UST 2Y vs 10Y yields</strong> Short- vs long-end rates (yield in %).
-          <br>2Y tracks Fed policy closely; 10Y reflects growth/inflation expectations. Steep curve = growth optimism;
-          flat/inverted = caution.
+          <strong>美国国债 2Y / 10Y 收益率</strong> 短端 vs 长端利率
+          <br>2Y紧跟美联储政策；10Y反映增长/通胀预期。曲线陡峭 = 增长乐观；平坦/倒挂 = 衰退预警。
         </div>
         <div class="meta">
           <div id="src-yields"></div>
@@ -58,12 +60,12 @@
       </div>
     </div>
 
+    <!-- 利差 -->
     <div class="chart">
       <canvas id="spread"></canvas>
       <div class="caption">
-        <div class="desc"><strong>10Y–2Y Spread:</strong> Long-short Treasury curve (percentage points).
-        <br>Inversion (negative spread) historically signals recession risk; steepening often precedes economic recovery or
-        policy pivot.</div>
+        <div class="desc"><strong>10Y−2Y 利差</strong> 长短期国债收益率之差
+        <br>倒挂（负值）= 历史上预示衰退风险；重新陡峭化 = 复苏或政策转向信号。</div>
         <div class="meta">
           <div id="src-spread"></div>
           <div id="upd-spread"></div>
@@ -71,13 +73,13 @@
       </div>
     </div>
 
+    <!-- VIX -->
     <div class="chart">
       <canvas id="vix"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>VIX (CBOE Volatility Index)</strong> Expected 30-day S&P 500 volatility (index level).
-          <br>High/spiking VIX = market fear/risk-off (often BTC drawdowns); low/complacent VIX = risk-on but can precede
-          corrections.
+          <strong>VIX 恐慌指数</strong> 标普500预期30天波动率
+          <br>VIX飙升 = 市场恐慌/避险 → BTC往往跟随下跌；VIX低位 = 风险偏好但需警惕反转。
         </div>
         <div class="meta">
           <div id="src-vix"></div>
@@ -86,13 +88,13 @@
       </div>
     </div>
 
+    <!-- CPI -->
     <div class="chart">
       <canvas id="cpi"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>CPI (Consumer Price Index)</strong> Headline inflation (year-over-year % change).
-          <br>High/persistent CPI = pressure for tighter Fed policy (headwind for risk assets like BTC); falling CPI = easing
-          conditions → supportive for risk.
+          <strong>CPI 消费者物价指数</strong> 通胀同比%
+          <br>CPI高企 = 美联储加息压力 → 风险资产承压；CPI回落 = 降息预期 → BTC利好。
         </div>
         <div class="meta">
           <div id="src-cpi"></div>
@@ -101,13 +103,13 @@
       </div>
     </div>
 
+    <!-- Fed Funds -->
     <div class="chart">
       <canvas id="fedfunds"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>Fed Funds Rate</strong> Target policy rate (effective rate in %).
-          <br>Rising rate = tightening liquidity (risk-off for crypto/assets); cuts or pause = accommodative stance → tailwind
-          for risk-on behavior.
+          <strong>联邦基金利率</strong> 美联储政策利率
+          <br>加息 = 紧缩 → 利空风险资产；降息/暂停 = 宽松 → 利好BTC。
         </div>
         <div class="meta">
           <div id="src-fedfunds"></div>
@@ -116,14 +118,14 @@
       </div>
     </div>
 
-    <!-- ═══ NEW: Fed Net Liquidity ──────────────────────────────── -->
+    <!-- 净流动性 -->
     <div class="chart">
       <canvas id="fednetliq"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>Fed 净流动性 / Fed Net Liquidity</strong> = WALCL − RRP − TGA（百万美元）
-          <br>净流动性上升 = 量化宽松/扩表 → 利好风险资产（含BTC）；净流动性下降 = 缩表/流动性收紧 → 利空。
-          <br><em>Fed Net Liquidity = Total Assets − Reverse Repo − Treasury General Account</em>
+          <strong>美联储净流动性</strong> = WALCL − RRP − TGA（百万美元）
+          <br>净流动性↑ = 扩表/宽松 → 利好BTC；净流动性↓ = 缩表/收紧 → 利空。
+          <br><em>Arthur Hayes 最关注的单一指标</em>
         </div>
         <div class="meta">
           <div id="src-fednetliq"></div>
@@ -132,14 +134,13 @@
       </div>
     </div>
 
-    <!-- ═══ NEW: Global Central Bank Balance Sheet ───────────────── -->
+    <!-- 全球央行 -->
     <div class="chart">
       <canvas id="globalcb"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>全球央行资产负债表 / Global CB Balance Sheet</strong> = 美联储 + 欧央行 + 日本央行（百万美元）
-          <br>全球央行同步扩表 = 充足的全球流动性（利好BTC）；同步缩表 = 流动性危机风险。
-          <br><em>Fed (WALCL) + ECB (ECBASSETSW × EUR/USD) + BOJ (JPNASSETS × 100M JPY → USD)</em>
+          <strong>全球央行资产负债表</strong> = 美联储 + 欧央行 + 日本央行
+          <br>同步扩表 = 全球流动性充裕 → BTC利好；同步缩表 = 流动性危机风险。
         </div>
         <div class="meta">
           <div id="src-globalcb"></div>
@@ -148,14 +149,13 @@
       </div>
     </div>
 
-    <!-- ═══ NEW: Stablecoin Market Cap ──────────────────────────── -->
+    <!-- 稳定币 -->
     <div class="chart">
       <canvas id="stablecoin"></canvas>
       <div class="caption">
         <div class="desc">
-          <strong>稳定币总市值 / Stablecoin Market Cap</strong> (USD, CoinGecko)
-          <br>稳定币市值上升 = 链上新资金入场，是加密货币市场的"干火药"（dry powder）；下降 = 资金外流/去风险。
-          <br><em>Top stablecoins aggregated via CoinGecko API</em>
+          <strong>稳定币总市值</strong> CoinGecko 聚合数据
+          <br>稳定币市值↑ = 链上新资金入场（"干火药"）；市值↓ = 资金外流/去风险。
         </div>
         <div class="meta">
           <div id="src-stablecoin"></div>
@@ -164,10 +164,10 @@
       </div>
     </div>
 
-    <!-- ═══ NEW: Arthur Hayes RRP Pipeline Signal Card ──────────── -->
+    <!-- Hayes RRP 信号 -->
     <div class="chart signal-card" id="rrp-signal-card">
       <div class="signal-header">
-        <span class="signal-badge" id="rrp-phase">🔄 Loading...</span>
+        <span class="signal-badge" id="rrp-phase">🔄 加载中...</span>
         <span class="signal-title">Arthur Hayes RRP 流动性管道信号</span>
       </div>
       <canvas id="rrpchart" style="aspect-ratio:16/7;"></canvas>
@@ -175,7 +175,7 @@
         <div class="desc">
           <strong id="rrp-signal-text">加载中...</strong>
           <br><span id="rrp-signal-detail"></span>
-          <br><small>基于 Arthur Hayes 流动性框架：RRP（隔夜逆回购）消耗速度决定市场流动性阶段。</small>
+          <br><small>🟢 快速消耗+余额充足 → 持有 | 🟡 快速消耗+见底 → 准备退出 | 🟠 放缓+近零 → 警戒 | 🔴 RRP回升 → 减仓</small>
         </div>
         <div class="meta">
           <div id="src-rrp"></div>
@@ -184,12 +184,89 @@
       </div>
     </div>
 
+    <!-- USDJPY -->
+    <div class="chart">
+      <canvas id="usdjpy"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>USD/JPY 日元汇率</strong> 日元兑美元
+          <br>JPY贬值(↑) = 套利交易活跃 → 风险偏好；JPY升值(↓) = 套利平仓 → 避险，往往伴随BTC下跌。
+        </div>
+        <div class="meta">
+          <div id="src-usdjpy"></div>
+          <div id="upd-usdjpy"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="chart">
+      <canvas id="tips"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>实际利率 10Y TIPS</strong> 扣除通胀后的真实收益率
+          <br>实际利率↑ = 持有BTC的机会成本上升 → 利空；实际利率↓/负值 = BTC吸引力上升 → 利好。
+        </div>
+        <div class="meta">
+          <div id="src-tips"></div>
+          <div id="upd-tips"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOJ 利率 -->
+    <div class="chart">
+      <canvas id="bojrate"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>BOJ 日本央行利率</strong> 3个月银行间利率
+          <br>BOJ加息 = 日元套利交易成本上升 → 全球流动性收紧信号；BOJ不动 = 套利安全。
+        </div>
+        <div class="meta">
+          <div id="src-bojrate"></div>
+          <div id="upd-bojrate"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 恐惧贪婪 -->
+    <div class="chart">
+      <canvas id="feargreed"></canvas>
+      <div class="caption">
+        <div class="desc">
+          <strong>BTC 恐惧贪婪指数</strong> 0-100，越低越恐惧
+          <br>&lt;25 极度恐惧 = 历史性买点区域；&gt;75 极度贪婪 = 见顶风险。
+        </div>
+        <div class="meta">
+          <div id="src-feargreed"></div>
+          <div id="upd-feargreed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 减半 -->
+    <div class="chart signal-card" id="halving-card">
+      <div class="signal-header">
+        <span class="signal-badge" style="background:#1e3a5f;color:#93c5fd">🔄 减半周期</span>
+        <span class="signal-title">Bitcoin Halving Cycle</span>
+      </div>
+      <div class="caption">
+        <div class="desc" style="text-align:center;font-size:1.2em">
+          <strong id="halving-text">加载中...</strong>
+          <br><span id="halving-detail"></span>
+          <br><small>上轮减半：2024年4月 · 下轮预计：2028年3月 · 历史规律：减半后12-18个月见顶</small>
+        </div>
+        <div class="meta">
+          <div id="src-halving"></div>
+        </div>
+      </div>
+    </div>
 
   </section>
 
   <hr>
   <footer class="container">
-    <p>Data refreshed daily via GitHub Actions</p>
+    <p>数据每日自动更新 · GitHub Actions · FRED / CoinGecko / alternative.me</p>
   </footer>
 
 </main>
