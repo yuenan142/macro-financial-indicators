@@ -1,15 +1,10 @@
 {
   "series_id": "STABLECOIN_MCAP",
-  "description": "Stablecoin total market cap (USD) from CoinGecko",
-  "source": "CoinGecko API /api/v3/global",
-  "points": [
-    {
-      "date": "2026-07-29",
-      "value": 260588666558.47
-    }
-  ],
-  "updated_at": "2026-07-29T11:22:14Z",
+  "description": "Stablecoin total market cap (USD) - fetch failed",
+  "source": "CoinGecko API",
+  "points": [],
+  "error": "429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/global",
   "_meta": {
-    "generated_utc": "2026-07-29T11:22:14Z"
+    "generated_utc": "2026-07-30T11:04:27Z"
   }
 }
