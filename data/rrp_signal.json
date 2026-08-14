@@ -2,21 +2,17 @@
   "series_id": "RRP_SIGNAL",
   "description": "Arthur Hayes RRP Pipeline Signal — based on Fed O/N Reverse Repo exhaustion rate",
   "source": "FRED RRPONTSYD + Hayes liquidity framework",
-  "current_rrp_b": 0.725,
+  "current_rrp_b": 0.45,
   "peak_rrp_b": 2553.716,
   "peak_date": "2022-12-30",
-  "remaining_pct": 0.03,
-  "change_4w_b": 0.45,
-  "daily_drain_b": 0.0213,
+  "remaining_pct": 0.02,
+  "change_4w_b": 0.3,
+  "daily_drain_b": 0.0142,
   "phase": "🟠 停滞 / Stalling Near Zero",
   "phase_color": "#f97316",
   "signal": "警惕 / Alert — RRP基本耗尽，流动性拐点临近",
-  "detail": "RRP已降至 $0.7B（仅剩峰值 0.0%），且消耗速度放缓（4周 +0.4B）。Arthur Hayes理论认为这意味着流动性释放即将结束，市场可能面临回调压力。",
+  "detail": "RRP已降至 $0.5B（仅剩峰值 0.0%），且消耗速度放缓（4周 +0.3B）。Arthur Hayes理论认为这意味着流动性释放即将结束，市场可能面临回调压力。",
   "points": [
-    {
-      "date": "2026-04-06",
-      "value": 0.227
-    },
     {
       "date": "2026-04-07",
       "value": 15.345
@@ -372,9 +368,13 @@
     {
       "date": "2026-08-12",
       "value": 0.725
+    },
+    {
+      "date": "2026-08-13",
+      "value": 0.45
     }
   ],
   "_meta": {
-    "generated_utc": "2026-08-13T09:59:49Z"
+    "generated_utc": "2026-08-14T09:56:19Z"
   }
 }
