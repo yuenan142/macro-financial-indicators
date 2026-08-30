@@ -4,11 +4,6 @@
   "source": "alternative.me",
   "points": [
     {
-      "date": "2026-06-01",
-      "value": 29,
-      "label": "Fear"
-    },
-    {
       "date": "2026-06-02",
       "value": 23,
       "label": "Extreme Fear"
@@ -452,9 +447,14 @@
       "date": "2026-08-29",
       "value": 68,
       "label": "Greed"
+    },
+    {
+      "date": "2026-08-30",
+      "value": 69,
+      "label": "Greed"
     }
   ],
   "_meta": {
-    "generated_utc": "2026-08-29T14:08:39Z"
+    "generated_utc": "2026-08-30T14:14:57Z"
   }
 }
