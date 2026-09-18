@@ -4,12 +4,12 @@
   "source": "CoinGecko API /api/v3/global",
   "points": [
     {
-      "date": "2026-09-17",
-      "value": 261434605569.28
+      "date": "2026-09-18",
+      "value": 261643695919.28
     }
   ],
-  "updated_at": "2026-09-17T14:05:51Z",
+  "updated_at": "2026-09-18T13:20:31Z",
   "_meta": {
-    "generated_utc": "2026-09-17T14:05:51Z"
+    "generated_utc": "2026-09-18T13:20:31Z"
   }
 }
