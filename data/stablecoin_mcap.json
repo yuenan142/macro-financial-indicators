@@ -1,10 +1,15 @@
 {
   "series_id": "STABLECOIN_MCAP",
-  "description": "Stablecoin total market cap (USD) - fetch failed",
-  "source": "CoinGecko API",
-  "points": [],
-  "error": "403 Client Error: Forbidden for url: https://api.coingecko.com/api/v3/simple/price?ids=tether%2Cusd-coin%2Cdai&vs_currencies=usd&include_market_cap=true",
+  "description": "Stablecoin total market cap (USD) from CoinGecko",
+  "source": "CoinGecko API /api/v3/global",
+  "points": [
+    {
+      "date": "2026-09-30",
+      "value": 262615936963.12
+    }
+  ],
+  "updated_at": "2026-09-30T15:33:49Z",
   "_meta": {
-    "generated_utc": "2026-09-29T15:19:22Z"
+    "generated_utc": "2026-09-30T15:33:49Z"
   }
 }
