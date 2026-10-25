@@ -2,10 +2,10 @@
   "series_id": "HALVING",
   "last_halving": "2024-04-20",
   "next_halving_est": "2028-03-01",
-  "days_since": 917,
-  "progress_pct": 65.0,
-  "months_since": 30.1,
+  "days_since": 918,
+  "progress_pct": 65.1,
+  "months_since": 30.2,
   "_meta": {
-    "generated_utc": "2026-10-24T13:04:10Z"
+    "generated_utc": "2026-10-25T13:32:07Z"
   }
 }
