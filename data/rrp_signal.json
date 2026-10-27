@@ -6,17 +6,13 @@
   "peak_rrp_b": 2553.716,
   "peak_date": "2022-12-30",
   "remaining_pct": 0.01,
-  "change_4w_b": -0.26,
-  "daily_drain_b": -0.0124,
+  "change_4w_b": -0.43,
+  "daily_drain_b": -0.0205,
   "phase": "🟠 停滞 / Stalling Near Zero",
   "phase_color": "#f97316",
   "signal": "警惕 / Alert — RRP基本耗尽，流动性拐点临近",
-  "detail": "RRP已降至 $0.2B（仅剩峰值 0.0%），且消耗速度放缓（4周 -0.3B）。Arthur Hayes理论认为这意味着流动性释放即将结束，市场可能面临回调压力。",
+  "detail": "RRP已降至 $0.2B（仅剩峰值 0.0%），且消耗速度放缓（4周 -0.4B）。Arthur Hayes理论认为这意味着流动性释放即将结束，市场可能面临回调压力。",
   "points": [
-    {
-      "date": "2026-06-16",
-      "value": 10.721
-    },
     {
       "date": "2026-06-17",
       "value": 6.828
@@ -372,9 +368,13 @@
     {
       "date": "2026-10-23",
       "value": 0.2
+    },
+    {
+      "date": "2026-10-26",
+      "value": 0.2
     }
   ],
   "_meta": {
-    "generated_utc": "2026-10-26T15:47:34Z"
+    "generated_utc": "2026-10-27T15:05:44Z"
   }
 }
